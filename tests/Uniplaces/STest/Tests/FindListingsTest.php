@@ -16,11 +16,11 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
     public function testSimpleSearchIgnoresPrice()
     {
         $listings = $this->search(
-            array(
+            [
                 'city' => 'Lisbon',
                 'price' => array('min' => 1000),
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         // the price was ignored so expecting 2
@@ -36,10 +36,10 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
     public function testCity($city, $nrExpectRes)
     {
         $listings = $this->search(
-            array(
+            [
                 'city' => $city,
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
         $this->assertCount($nrExpectRes, $listings);
         foreach ($listings as $listing) {
@@ -52,21 +52,21 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
      */
     public function providerCity()
     {
-        return array(
-            array('Lisbon', 2),
-            array('Oporto', 2),
-            array('Faro', 0)
-        );
+        return [
+            ['Lisbon', 2],
+            ['Oporto', 2],
+            ['Faro', 0]
+        ];
     }
 
     public function testAddress()
     {
         $listings = $this->searchAdvanced(
-            array(
+            [
                 'city' => 'Lisbon',
                 'address' => 'Avenida Liberade',
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         $this->assertCount(1, $listings);
@@ -79,11 +79,11 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
     {
         // test min
         $listings = $this->searchAdvanced(
-            array(
+            [
                 'city' => 'Lisbon',
-                'price' => array('min' => 1000),
+                'price' => ['min' => 1000],
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         $this->assertCount(1, $listings);
@@ -93,11 +93,11 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
 
         // test max
         $listings = $this->searchAdvanced(
-            array(
+            [
                 'city' => 'Lisbon',
-                'price' => array('max' => 1000),
+                'price' => ['max' => 1000],
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         $this->assertCount(1, $listings);
@@ -107,22 +107,22 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
 
         // test range
         $listings = $this->searchAdvanced(
-            array(
+            [
                 'city' => 'Lisbon',
-                'price' => array('min' => 200, 'max' => 800),
+                'price' => ['min' => 200, 'max' => 800],
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         $this->assertCount(0, $listings);
 
         // test exactly
         $listings = $this->searchAdvanced(
-            array(
+            [
                 'city' => 'Lisbon',
-                'price' => array('min' => 900, 'max' => 900),
+                'price' => ['min' => 900, 'max' => 900],
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         $this->assertCount(1, $listings);
@@ -134,12 +134,12 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
     public function testDates()
     {
         $listings = $this->search(
-            array(
+            [
                 'city' => 'Lisbon',
                 'start_date' => DateTime::createFromFormat('j-M-Y', '15-May-2014'),
                 'end_date' => DateTime::createFromFormat('j-M-Y', '15-Jun-2014'),
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         $this->assertCount(1, $listings);
@@ -148,12 +148,12 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Avenida da Liberdade', $listing->getLocalization()->getAddress());
 
         $listings = $this->search(
-            array(
+            [
                 'city' => 'Lisbon',
                 'start_date' => DateTime::createFromFormat('j-M-Y', '15-May-2014'),
                 'end_date' => DateTime::createFromFormat('j-M-Y', '15-Jul-2014'),
                 'occupation' => TenantTypes::UNDERGRADUATE
-            )
+            ]
         );
 
         $this->assertCount(2, $listings);
@@ -162,10 +162,10 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
     public function testTenantType()
     {
         $listings = $this->search(
-            array(
+            [
                 'city' => 'Lisbon',
                 'occupation' => TenantTypes::RESEARCHER
-            )
+            ]
         );
 
         $this->assertCount(1, $listings);
@@ -199,7 +199,7 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
      */
     protected function getListings()
     {
-        return array(
+        return [
             new Listing(
                 new Localization('Lisbon', 'Rua Luz Soriano', 67),
                 new Requirements(new StayTime(50, 600), null),
@@ -220,6 +220,6 @@ class FindListingsTest extends PHPUnit_Framework_TestCase
                 new Requirements(null, new TenantTypes(array(TenantTypes::UNDERGRADUATE))),
                 700
             ),
-        );
+        ];
     }
 }

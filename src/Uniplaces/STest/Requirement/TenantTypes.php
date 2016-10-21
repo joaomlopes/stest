@@ -16,7 +16,7 @@ class TenantTypes
     /**
      * @var array
      */
-    protected $types = array();
+    protected $types = [];
 
     /**
      * @param array $types

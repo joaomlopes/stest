@@ -30,7 +30,7 @@ class ListingFinder implements ListingFinderInterface
      */
     public function reduce(array $listings, array $search)
     {
-        $matchListings = array();
+        $matchListings = [];
 
         foreach ($listings as $listing) {
             if ($listing->getLocalization()->getCity() != $search['city']) {
