@@ -8,7 +8,7 @@ https://github.com/uniplaces/stest/blob/master/src/Uniplaces/STest/ListingFinder
 Don't change the tests, they all must run:
 https://github.com/uniplaces/stest/blob/master/tests/Uniplaces/STest/Tests/FindListingsTest.php#L171
 
-After refactoring what here's what we expect:
+After refactoring here's what we expect:
 * ListingFinder and ListingFinderFactory should be easily readable and understandable;
 * The size of ListingFinder should be minimum (it's just a class to "query");
 * Adding new "rules" should be easy and shouldn't require to touch ListingFinder code directly;
