@@ -3,9 +3,7 @@
 namespace Uniplaces\STest;
 
 use Uniplaces\STest\Listing\Listing;
-use Uniplaces\STest\Requirement\StayTime;
-use Uniplaces\STest\Requirement\TenantTypes;
-use DateTime;
+use Uniplaces\STest\HandleListingSearch;
 
 class ListingFinder implements ListingFinderInterface
 {
@@ -14,12 +12,18 @@ class ListingFinder implements ListingFinderInterface
      */
     protected $searchType;
 
+	/**
+	 * @var \Uniplaces\STest\HandleListingSearch
+	 */
+	protected $handleSearch;
+
     /**
      * @param string $searchType simple|advanced
      */
     public function __construct($searchType = 'simple')
     {
         $this->searchType = $searchType;
+	    $this->handleSearch = new HandleListingSearch();
     }
 
     /**
@@ -33,51 +37,32 @@ class ListingFinder implements ListingFinderInterface
         $matchListings = [];
 
         foreach ($listings as $listing) {
-            if ($listing->getLocalization()->getCity() != $search['city']) {
+
+	        if ($this->handleSearch->searchCity($listing->getLocalization()->getCity(),$search)) {
                 continue;
             }
 
-            $stayTime = $listing->getRequirements()->getStayTime();
-            if (isset($search['start_date']) && $stayTime instanceof StayTime) {
-                /** @var DateTime $startDate */
-                $startDate = $search['start_date'];
-                /** @var DateTime $endDate */
-                $endDate = $search['end_date'];
-
-                $interval = $endDate->diff($startDate);
-                $days = (int)$interval->format('%a');
-
-                if ($days < $stayTime->getMin() || $days > $stayTime->getMax()) {
-                    continue;
-                }
+            if($this->handleSearch->searchStayTime($listing->getRequirements()->getStayTime(),$search)) {
+	            continue;
             }
 
-
-            $tenantTypes = $listing->getRequirements()->getTenantTypes();
-            if ($tenantTypes instanceof TenantTypes && !in_array($search['occupation'], $tenantTypes->toArray())) {
+            if ($this->handleSearch->searchTenantType($listing->getRequirements()->getTenantTypes(), $search)) {
                 continue;
             }
 
 
             if ($this->searchType == 'advanced') {
-                if (isset($search['address'])) {
-                    $listingAddress = strtolower(trim($listing->getLocalization()->getAddress()));
-                    $address = strtolower(trim($search['address']));
+	            if ($this->handleSearch->searchAddress($listing->getLocalization()->getAddress(), $search)) {
+		            continue;
+	            }
 
-                    if (levenshtein($listingAddress, $address) > 5) {
-                        continue;
-                    }
+                if ($this->handleSearch->searchPrice($listing->getPrice(), $search)) {
+	                continue;
                 }
+            }
 
-                if (isset($search['price'])) {
-                    $listingPrice = $listing->getPrice();
-                    $min = isset($search['price']['min']) ? $search['price']['min'] : null;
-                    $max = isset($search['price']['max']) ? $search['price']['max'] : null;
-
-                    if (($min !== null && $min > $listingPrice) || ($max !== null && $max < $listingPrice)) {
-                        continue;
-                    }
-                }
+            if($this->searchType != 'simple' && $this->searchType != 'advanced') {
+				$this->handleSearch->customSearchType($listing, $search);
             }
 
             $matchListings[] = $listing;
