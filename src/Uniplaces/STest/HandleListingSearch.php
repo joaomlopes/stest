@@ -21,10 +21,10 @@ class HandleListingSearch {
 	 */
 	public function searchCity($listing_city, $search) {
 		if ($listing_city != $search['city']) {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -44,11 +44,11 @@ class HandleListingSearch {
 			$days = (int)$interval->format('%a');
 
 			if ($days < $stayTime->getMin() || $days > $stayTime->getMax()) {
-				return true;
+				return false;
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -59,10 +59,10 @@ class HandleListingSearch {
 	 */
 	public function searchTenantType($tenantTypes, $search) {
 		if ($tenantTypes instanceof TenantTypes && !in_array($search['occupation'], $tenantTypes->toArray())) {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -77,11 +77,11 @@ class HandleListingSearch {
 			$address = strtolower(trim($search['address']));
 
 			if (levenshtein($listingAddress, $address) > 5) {
-				return true;
+				return false;
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -96,11 +96,11 @@ class HandleListingSearch {
 			$max = isset($search['price']['max']) ? $search['price']['max'] : null;
 
 			if (($min !== null && $min > $listing_price) || ($max !== null && $max < $listing_price)) {
-				return true;
+				return false;
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	/**

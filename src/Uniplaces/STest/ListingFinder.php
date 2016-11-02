@@ -38,24 +38,24 @@ class ListingFinder implements ListingFinderInterface
 
         foreach ($listings as $listing) {
 
-	        if ($this->handleSearch->searchCity($listing->getLocalization()->getCity(),$search)) {
+	        if ($this->handleSearch->searchCity($listing->getLocalization()->getCity(),$search) == false) {
                 continue;
             }
 
-            if($this->handleSearch->searchStayTime($listing->getRequirements()->getStayTime(),$search)) {
+            if($this->handleSearch->searchStayTime($listing->getRequirements()->getStayTime(),$search) == false) {
 	            continue;
             }
 
-            if ($this->handleSearch->searchTenantType($listing->getRequirements()->getTenantTypes(), $search)) {
+            if ($this->handleSearch->searchTenantType($listing->getRequirements()->getTenantTypes(), $search) == false) {
                 continue;
             }
 
             if ($this->searchType == 'advanced') {
-	            if ($this->handleSearch->searchAddress($listing->getLocalization()->getAddress(), $search)) {
+	            if ($this->handleSearch->searchAddress($listing->getLocalization()->getAddress(), $search) == false) {
 		            continue;
 	            }
 
-                if ($this->handleSearch->searchPrice($listing->getPrice(), $search)) {
+                if ($this->handleSearch->searchPrice($listing->getPrice(), $search) == false) {
 	                continue;
                 }
             }
@@ -65,7 +65,7 @@ class ListingFinder implements ListingFinderInterface
 	         * Then runs the method and if it's false continue to the next foreach index
 	         */
             if($this->searchType != 'simple' && $this->searchType != 'advanced') {
-				if(!$this->handleSearch->customSearchType($listing, $search)) {
+				if($this->handleSearch->customSearchType($listing, $search) == false) {
 					continue;
 				}
             }
