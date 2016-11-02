@@ -105,6 +105,7 @@ class HandleListingSearch {
 
 	/**
 	 * Method to get other search types than Simple and Advanced
+	 * And return true or false after run all verifications
 	 *
 	 * @param $listing
 	 * @param $search
@@ -112,7 +113,8 @@ class HandleListingSearch {
 	 * @return bool
 	 */
 	public function customSearchType($listing, $search) {
+		$validateSearch = true;
 
-		return true;
+		return $validateSearch;
 	}
 }

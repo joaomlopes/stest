@@ -50,7 +50,6 @@ class ListingFinder implements ListingFinderInterface
                 continue;
             }
 
-
             if ($this->searchType == 'advanced') {
 	            if ($this->handleSearch->searchAddress($listing->getLocalization()->getAddress(), $search)) {
 		            continue;
@@ -61,8 +60,14 @@ class ListingFinder implements ListingFinderInterface
                 }
             }
 
+	        /**
+	         * If search type isn't simple nor advanced
+	         * Then runs the method and if it's false continue to the next foreach index
+	         */
             if($this->searchType != 'simple' && $this->searchType != 'advanced') {
-				$this->handleSearch->customSearchType($listing, $search);
+				if(!$this->handleSearch->customSearchType($listing, $search)) {
+					continue;
+				}
             }
 
             $matchListings[] = $listing;
