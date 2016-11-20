@@ -25,11 +25,4 @@ After refactoring here's what we expect:
 * Run tests: ./vendor/bin/phpunit
 
 #### How I Solve
-Since the size of ListingFinder should be minimum as possible and without being required to change it when adding new rules, 
-I decided to create an auxiliary class and create a method for each rule known.
-Everytime that the method got returned as false, jumps to another index of the foreach cycle without adding the listing to the matchListings.
-To get new search types without changing the ListingFinder, I created a method (customSearchType) where, after being coded, will return a 
-variable($validateSearch) and continue to the next index if the value is false.
-Even it was asked to avoid hard-coded values on ListingFinder, I had to let stay the verification for the search type as advanced and 
-added one more to run only if it isn't simple or advanced. Certainly there's some work around to avoid this, but since the purpose of the
-test is to get values from a search, it makes sense to leave this hardcoded.
+Changes made to be more appropriate.

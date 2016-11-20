@@ -3,76 +3,46 @@
 namespace Uniplaces\STest;
 
 use Uniplaces\STest\Listing\Listing;
-use Uniplaces\STest\HandleListingSearch;
 
-class ListingFinder implements ListingFinderInterface
-{
-    /**
-     * @var string
-     */
-    protected $searchType;
+class ListingFinder implements ListingFinderInterface {
+	/**
+	 * @var string
+	 */
+	protected $searchType;
 
 	/**
-	 * @var \Uniplaces\STest\HandleListingSearch
+	 * @param string $searchType simple|advanced
 	 */
-	protected $handleSearch;
+	public function __construct( $searchType = 'simple' ) {
+		$this->searchType = $searchType;
+	}
 
-    /**
-     * @param string $searchType simple|advanced
-     */
-    public function __construct($searchType = 'simple')
-    {
-        $this->searchType = $searchType;
-	    $this->handleSearch = new HandleListingSearch();
-    }
+	/**
+	 * @param Listing[] $listings
+	 * @param array $search
+	 *
+	 * @return Listing[]
+	 */
+	public function reduce( array $listings, array $search ) {
+		$matchListings = [];
 
-    /**
-     * @param Listing[] $listings
-     * @param array     $search
-     *
-     * @return Listing[]
-     */
-    public function reduce(array $listings, array $search)
-    {
-        $matchListings = [];
+		foreach ( $listings as $listing ) {
 
-        foreach ($listings as $listing) {
+			$results = $this->handleSearch( $listing, $search );
 
-	        if ($this->handleSearch->searchCity($listing->getLocalization()->getCity(),$search) == false) {
-                continue;
-            }
+			if ( $results ) {
+				$matchListings[] = $listing;
+			}
+		}
 
-            if($this->handleSearch->searchStayTime($listing->getRequirements()->getStayTime(),$search) == false) {
-	            continue;
-            }
+		return $matchListings;
+	}
 
-            if ($this->handleSearch->searchTenantType($listing->getRequirements()->getTenantTypes(), $search) == false) {
-                continue;
-            }
+	/**
+	 * @param $listing
+	 * @param array $search
+	 */
+	public function handleSearch( $listing, array $search ) {
 
-            if ($this->searchType == 'advanced') {
-	            if ($this->handleSearch->searchAddress($listing->getLocalization()->getAddress(), $search) == false) {
-		            continue;
-	            }
-
-                if ($this->handleSearch->searchPrice($listing->getPrice(), $search) == false) {
-	                continue;
-                }
-            }
-
-	        /**
-	         * If search type isn't simple nor advanced
-	         * Then runs the method and if it's false continue to the next foreach index
-	         */
-            if($this->searchType != 'simple' && $this->searchType != 'advanced') {
-				if($this->handleSearch->customSearchType($listing, $search) == false) {
-					continue;
-				}
-            }
-
-            $matchListings[] = $listing;
-        }
-
-        return $matchListings;
-    }
+	}
 }
