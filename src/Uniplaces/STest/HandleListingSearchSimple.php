@@ -12,8 +12,14 @@ use Uniplaces\STest\Listing\Listing;
  */
 class HandleListingSearchSimple extends ListingFinder {
 
+	/**
+	 * @var HandleListingSearch
+	 */
 	protected $handleSearch;
 
+	/**
+	 * HandleListingSearchSimple constructor.
+	 */
 	public function __construct() {
 		$this->handleSearch = new HandleListingSearch();
 	}
